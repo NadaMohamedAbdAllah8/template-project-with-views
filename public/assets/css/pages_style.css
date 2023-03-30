@@ -1,0 +1,99 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    /* background-color: black; */
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* Add padding to containers */
+.container {
+    /* padding: 16px; */
+    background-color: white;
+}
+
+/* Full-width input fields */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 15px;
+    margin: 5px 0 22px 0;
+    display: inline-block;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    background-color: #ddd;
+    outline: none;
+}
+
+/* Overwrite default styles of hr */
+hr {
+    border: 1px solid #f1f1f1;
+    margin-bottom: 25px;
+}
+
+/* Set a style for the submit button */
+.actionbtn {
+    background-color: dodgerblue;
+    color: white;
+    padding: 16px 20px;
+    border: none;
+    cursor: pointer;
+    width: 10%;
+    opacity: 0.9;
+    text-align: center;
+    float: right;
+    /* display: inline-block; */
+}
+
+.actionbtn:hover {
+    opacity: 1;
+}
+
+/* Add a blue text color to links */
+a {
+    color: dodgerblue;
+}
+
+/* Set a grey background color and center the text of the "sign in" section */
+.signin-signup {
+    background-color: #f1f1f1;
+    text-align: center;
+}
+
+.formdiv {
+    width: 75%;
+    margin: auto;
+    padding: auto;
+    /* background-color: rgb(0, 157, 255); */
+}
+
+.form-check {
+    display: inline;
+}
+
+.btn-looklike-link {
+    background: none !important;
+    border: none;
+    padding: 0 !important;
+    /*optional*/
+    font-family: arial, sans-serif;
+    /*input has OS specific font-family*/
+    color: rgb(30, 144, 255);
+    cursor: pointer;
+}
+
+.btn-looklike-link:hover {
+    color: #069;
+    text-decoration: underline;
+}
+
+select {
+    width: 90%;
+    padding: 15px;
+    margin: 5px 0 22px 0;
+    display: inline-block;
+}
