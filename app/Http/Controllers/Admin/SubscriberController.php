@@ -15,7 +15,7 @@ class SubscriberController extends Controller
      */
     public function index()
     {
-       // dd(Auth::guard('admin')->user()->name);
+        // dd(Auth::guard('admin')->user()->name);
         //dd('hi in the index');
 
         $data = [
@@ -25,7 +25,6 @@ class SubscriberController extends Controller
         ];
 
         return view('admin.pages.subscribers.index', $data);
-
     }
 
     /**

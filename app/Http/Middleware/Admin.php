@@ -18,7 +18,7 @@ class Admin
     {
         if (FacadesAuth::guard($guard)->check()) {
             return $next($request);
-            //return redirect('admin');
+        //return redirect('admin');
         } else {
             return redirect()->route('admin.login');
         }
