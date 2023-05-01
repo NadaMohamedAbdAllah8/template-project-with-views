@@ -35,20 +35,9 @@ hr {
     margin-bottom: 25px;
 }
 
-/* Set a style for the submit button */
-.actionbtn {
-    background-color: dodgerblue;
-    color: white;
-    padding: 16px 20px;
-    border: none;
-    cursor: pointer;
-    width: 10%;
-    opacity: 0.9;
+.table td .table th {
     text-align: center;
-    float: right;
-    /* display: inline-block; */
 }
-
 .actionbtn:hover {
     opacity: 1;
 }
@@ -71,6 +60,11 @@ a {
     /* background-color: rgb(0, 157, 255); */
 }
 
+.login-form {
+    width: 50%;
+    margin: auto;
+    padding: auto;
+}
 .form-check {
     display: inline;
 }
@@ -84,6 +78,7 @@ a {
     /*input has OS specific font-family*/
     color: rgb(30, 144, 255);
     cursor: pointer;
+    border-radius: 1rem;
 }
 
 .btn-looklike-link:hover {
@@ -96,4 +91,20 @@ select {
     padding: 15px;
     margin: 5px 0 22px 0;
     display: inline-block;
+}
+
+/* Set a style for the submit button */
+.actionbtn {
+    background-color: dodgerblue;
+    color: white;
+    padding: 1.5rem;
+    margin: 2px;
+    border: none;
+    border-radius: 1rem;
+    cursor: pointer;
+    width: 10%;
+    opacity: 0.9;
+    text-align: center;
+    float: right;
+    /* display: inline-block; */
 }
