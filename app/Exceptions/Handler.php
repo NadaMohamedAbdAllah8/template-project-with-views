@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -37,5 +38,16 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    public function render($request, Throwable $e)
+    {
+        if ($e instanceof ModelNotFoundException) {
+            session()->flash('error', 'The model is not found. Please, check you id');
+
+            return redirect()->route('admin.admins.index')
+                ->with('error', 'The model is not found. Please, check you id');
+        }
+        return parent::render($request, $e);
     }
 }

@@ -17,8 +17,8 @@ License: You must have a valid license purchased only from themeforest(the above
 <head>
     <base href="">
     <meta charset="utf-8" />
-    <title>Template project with views | @yield('title')</title>
-    <meta name="description" content="Template project with views" />
+    <title>Manage Subscribers | @yield('title')</title>
+    <meta name="description" content="Manage Subscribers" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Latest compiled and minified JavaScript -->

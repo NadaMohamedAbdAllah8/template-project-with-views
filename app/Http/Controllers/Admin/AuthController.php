@@ -17,7 +17,7 @@ class AuthController extends Controller
             // Login
             if (Auth::guard('admin')->attempt(['email' => request('email'),
                 'password' => request('password')])) {
-                return redirect()->route('admin.subscribers.index')
+                return redirect()->route('admin.admins.index')
                     ->with('success', 'Logged In Successfully');
             } else {
                 return redirect()->route('admin.login')->with('error', 'Bad credentials');

@@ -29,15 +29,13 @@ Route::group(['prefix' => '', 'namespace' => 'App\Http\Controllers\Admin', 'as' 
         Route::post('logout', 'AuthController@logout')->name('logout');
 
         /**
-         * Subscribers Module Routes
+         * Admins Module Routes
          */
-        Route::resource('subscribers', 'SubscriberController')->except(['show']);
-        Route::prefix('subscribers')->group(function () {
-            Route:: as ('subscribers.')->group(function () {
-                Route::get('data', 'SubscriberController@data')->name('data');
+        Route::prefix('admins')->group(function () {
+            Route::as('admins.')->group(function () {
+                Route::get('data', 'AdminController@data')->name('data');
             });
         });
-
+        Route::resource('admins', 'AdminController');
     });
-
 });
