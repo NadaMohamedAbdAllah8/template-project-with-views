@@ -25,7 +25,7 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => ['required', 'string', 'max:191',
+            'email' => ['required', 'email', 'max:191',
                 Rule::unique('admins', 'email')
                     ->ignore($this->admin->id)],
             'name' => 'required|alpha|min:2|string',
