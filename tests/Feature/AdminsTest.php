@@ -91,9 +91,28 @@ class AdminsTest extends TestCase
         $response->assertRedirect('/admins');
     }
 
+    public function test_creating_admin_fails_on_duplicated_emails()
+    {
+        $response = $this->actingAs($this->admin, 'admin')->get('/admins/create');
+        $response->assertStatus(200);
+
+        // save admin
+        $response = $this->actingAs($this->admin, 'admin')->post('/admins',
+            $this->getTestAdminData());
+
+        // redirecting to admins index
+        $response->assertStatus(302);
+        $response->assertRedirect('/admins');
+
+        // save the same admin
+        $response = $this->actingAs($this->admin, 'admin')->post('/admins',
+            $this->getTestAdminData());
+
+        $response->assertInvalid(['email']);
+    }
+
     public function test_newly_created_admin_is_returned_in_data()
     {
-
         $response = $this->actingAs($this->admin, 'admin')->get('/admins/create');
         $response->assertStatus(200);
 
@@ -115,23 +134,6 @@ class AdminsTest extends TestCase
 
         $this->assertEquals($this->email, $data[$latest_index]['email']);
         $this->assertEquals($this->name, $data[$latest_index]['name']);
-    }
-
-    public function test_newly_created_admin_is_in_index_page()
-    {
-        $response = $this->actingAs($this->admin, 'admin')->get('/admins/create');
-        $response->assertStatus(200);
-
-        // save admin
-        $response = $this->actingAs($this->admin, 'admin')->post('/admins',
-            $this->getTestAdminData());
-        $response->assertStatus(302);
-        $response->assertRedirect('/admins');
-
-        $response = $this->actingAs($this->admin, 'admin')->get('/admins');
-
-        $response->assertStatus(200);
-        $response->assertViewIs('admin.pages.admins.index');
     }
 
     private function getTestAdminData(): array
