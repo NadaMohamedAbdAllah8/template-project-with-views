@@ -23,11 +23,9 @@ class AdminController extends Controller
      */
     public function index()
     {
-        // return redirect()->route('admin.admins.edit', 1);
         $data = [
             'title' => 'Admins',
         ];
-
         return view('admin.pages.admins.index', $data);
     }
 
