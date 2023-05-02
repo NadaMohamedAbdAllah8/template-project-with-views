@@ -89,6 +89,12 @@ class AdminsTest extends TestCase
         // redirecting to admins index
         $response->assertStatus(302);
         $response->assertRedirect('/admins');
+        // saved in the database
+        $this->assertDatabaseHas('admins', ['email' => $this->email, 'name' => $this->name]);
+
+        $last_admin = Admin::latest('id')->first();
+        $this->assertEquals($this->email, $last_admin->email);
+        $this->assertEquals($this->name, $last_admin->name);
     }
 
     public function test_creating_admin_fails_on_duplicated_emails()
