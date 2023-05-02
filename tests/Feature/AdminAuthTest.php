@@ -20,8 +20,7 @@ class AdminLoginTest extends TestCase
 
     public function test_redirect_to_login_page_when_not_authenticated()
     {
-        $response = $this->get('/subscribers');
-
+        $response = $this->get('/admins');
         $response->assertRedirect('/login');
     }
 
@@ -36,7 +35,7 @@ class AdminLoginTest extends TestCase
             'password' => 'password',
         ]);
 
-        $response->assertRedirect('/subscribers');
+        $response->assertRedirect('/admins');
         $this->assertAuthenticatedAs($admin, 'admin');
     }
 
@@ -67,7 +66,6 @@ class AdminLoginTest extends TestCase
     public function test_logout_successfully()
     {
         $response = $this->post('/logout');
-
         $response->assertRedirect('/login');
     }
 }
