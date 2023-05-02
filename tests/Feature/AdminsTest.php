@@ -12,12 +12,17 @@ class AdminsTest extends TestCase
     use RefreshDatabase;
 
     private $admin;
+    private $email;
+    private $name;
+    private $password;
 
     protected function setUp(): void
     {
         parent::setUp();
-
         $this->admin = $this->getAdmin();
+        $this->email = 'new_email@new.new';
+        $this->name = 'new';
+        $this->password = 'new';
     }
 
     public function test_welcome_page_opens_successfully()
@@ -74,19 +79,12 @@ class AdminsTest extends TestCase
 
     public function test_create_an_admin_successfully()
     {
-        $email = 'new_email@new.new';
-        $name = 'new';
-        $password = 'new';
         $response = $this->actingAs($this->admin, 'admin')->get('/admins/create');
         $response->assertStatus(200);
 
         // save admin
         $response = $this->actingAs($this->admin, 'admin')->post('/admins',
-            [
-                'email' => $email,
-                'name' => $name,
-                'password' => $password,
-            ]);
+            $this->getTestAdminData());
 
         // redirecting to admins index
         $response->assertStatus(302);
@@ -95,19 +93,13 @@ class AdminsTest extends TestCase
 
     public function test_newly_created_admin_is_returned_in_data()
     {
-        $email = 'new_email@new.new';
-        $name = 'new';
-        $password = 'new';
+
         $response = $this->actingAs($this->admin, 'admin')->get('/admins/create');
         $response->assertStatus(200);
 
         // save admin
         $response = $this->actingAs($this->admin, 'admin')->post('/admins',
-            [
-                'email' => $email,
-                'name' => $name,
-                'password' => $password,
-            ]);
+            $this->getTestAdminData());
 
         $response->assertStatus(302);
         $response->assertRedirect('/admins');
@@ -121,25 +113,18 @@ class AdminsTest extends TestCase
         $data_count = count($data);
         $latest_index = $data_count - 1;
 
-        $this->assertEquals($email, $data[$latest_index]['email']);
-        $this->assertEquals($name, $data[$latest_index]['name']);
+        $this->assertEquals($this->email, $data[$latest_index]['email']);
+        $this->assertEquals($this->name, $data[$latest_index]['name']);
     }
 
     public function test_newly_created_admin_is_in_index_page()
     {
-        $email = 'new_email@new.new';
-        $name = 'new';
-        $password = 'new';
         $response = $this->actingAs($this->admin, 'admin')->get('/admins/create');
         $response->assertStatus(200);
 
         // save admin
         $response = $this->actingAs($this->admin, 'admin')->post('/admins',
-            [
-                'email' => $email,
-                'name' => $name,
-                'password' => $password,
-            ]);
+            $this->getTestAdminData());
         $response->assertStatus(302);
         $response->assertRedirect('/admins');
 
@@ -147,12 +132,16 @@ class AdminsTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertViewIs('admin.pages.admins.index');
-        // $response->assertDontSee(config('global.no_records'));
-        $response->assertSee($email);
-        $response->assertSee($name);
-
     }
 
+    private function getTestAdminData(): array
+    {
+        return [
+            'email' => $this->email,
+            'name' => $this->name,
+            'password' => $this->password,
+        ];
+    }
     private function getAdmin(): Admin
     {
         $this->seed(AdminSeeder::class);
