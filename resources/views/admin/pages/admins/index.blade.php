@@ -36,9 +36,9 @@
             'paging': true,
             'info': true,
             "ajax": "{{ route('admin.admins.data') }}",
-            // "language": {
-            //     "emptyTable": "No data available in table. Check back later"
-            // },
+            "language": {
+                "emptyTable": "{{ config('global.no_records') }}"
+            },
             "columnDefs": [{
                     "targets": 0, // target the first column (id)
                     "data": "id",
