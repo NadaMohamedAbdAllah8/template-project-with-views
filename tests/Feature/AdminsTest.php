@@ -14,6 +14,8 @@ class AdminsTest extends TestCase
     private $admin;
     private $email;
     private $name;
+    private $email_updated;
+    private $name_updated;
     private $password;
 
     protected function setUp(): void
@@ -23,6 +25,8 @@ class AdminsTest extends TestCase
         $this->email = 'new_email@new.new';
         $this->name = 'new';
         $this->password = 'new';
+        $this->email_updated = 'new_email_updated@new.new';
+        $this->name_updated = 'new_updated';
     }
 
     public function test_welcome_page_opens_successfully()
@@ -32,6 +36,7 @@ class AdminsTest extends TestCase
         $response->assertStatus(200);
     }
 
+    // start: index test
     public function test_index_page_does_not_open_for_unauthenticated()
     {
         $response = $this->get('/admins');
@@ -47,7 +52,9 @@ class AdminsTest extends TestCase
         $response->assertStatus(200);
         $response->assertViewIs('admin.pages.admins.index');
     }
+    // end: index test
 
+    // start: create test
     public function test_create_page_does_not_open_for_unauthenticated()
     {
         $response = $this->get('/admins/create');
@@ -134,6 +141,57 @@ class AdminsTest extends TestCase
         $this->assertEquals($this->email, $data[$latest_index]['email']);
         $this->assertEquals($this->name, $data[$latest_index]['name']);
     }
+    // end: create test
+
+    // start: edit test
+    public function test_edit_page_does_not_open_for_unauthenticated()
+    {
+        $response = $this->get('/admins/edit');
+
+        $response->assertStatus(302);
+        $response->assertRedirect('/login');
+    }
+
+    public function test_admin_editing_validation()
+    {
+        // create an admin
+        $admin = $this->getAdmin();
+
+        $response = $this->actingAs($this->admin, 'admin')->patch('/admins/' . $admin->id,
+            [
+                //  'id'=>$admin->id
+                'email' => 'email',
+                'name' => '1',
+            ]
+        );
+
+        $response->assertStatus(302);
+        $response->assertInvalid(['email', 'name']);
+    }
+
+    public function test_edit_an_admin_successfully()
+    {
+        // create an admin
+        $admin = $this->getAdmin();
+        $response = $this->actingAs($this->admin, 'admin')->get('/admins/' . $admin->id . '/edit/');
+        $response->assertStatus(200);
+
+        // save admin
+        $response = $this->actingAs($this->admin, 'admin')->patch('/admins/' . $admin->id,
+            $this->getAdminData());
+
+        // redirecting to admins index
+        $response->assertStatus(302);
+        $response->assertRedirect('/admins');
+        // saved in the database
+        $this->assertDatabaseHas('admins', ['email' => $this->email, 'name' => $this->name]);
+
+        $last_admin = Admin::latest('id')->first();
+        $this->assertEquals($this->email, $last_admin->email);
+        $this->assertEquals($this->name, $last_admin->name);
+    }
+
+    // start: delete test
 
     public function test_delete_does_not_open_for_unauthenticated()
     {
@@ -163,6 +221,7 @@ class AdminsTest extends TestCase
         $this->assertNotEquals($this->email, $data[$latest_index]['email']);
         $this->assertNotEquals($this->name, $data[$latest_index]['name']);
     }
+    // end: delete test
 
     private function createAdmin(): Admin
     {
@@ -210,6 +269,14 @@ class AdminsTest extends TestCase
             'email' => $this->email,
             'name' => $this->name,
             'password' => $this->password,
+        ];
+    }
+
+    private function getAdminUpdatedData(): array
+    {
+        return [
+            'email' => $this->email_updated,
+            'name' => $this->email_updated,
         ];
     }
 
