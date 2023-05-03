@@ -48,13 +48,6 @@ class AdminsTest extends TestCase
         $response->assertViewIs('admin.pages.admins.index');
     }
 
-    // public function test_index_page_is_empty()
-    // {
-    //     $response = $this->actingAs($this->admin, 'admin')->get('/admins');
-
-    //     $response->assertSee(config('global.no_records'));
-    // }
-
     public function test_create_page_does_not_open_for_unauthenticated()
     {
         $response = $this->get('/admins/create');
