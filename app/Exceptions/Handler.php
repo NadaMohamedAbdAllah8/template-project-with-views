@@ -45,7 +45,7 @@ class Handler extends ExceptionHandler
         if ($e instanceof ModelNotFoundException) {
             session()->flash('error', 'The model is not found. Please, check you id');
 
-            return redirect()->route('admin.admins.index')
+            return redirect()->back()
                 ->with('error', 'The model is not found. Please, check you id');
         }
         return parent::render($request, $e);
