@@ -173,7 +173,8 @@ class AdminsTest extends TestCase
     {
         // create an admin
         $admin = $this->getAdmin();
-        $response = $this->actingAs($this->admin, 'admin')->get('/admins/' . $admin->id . '/edit/');
+        $response = $this->actingAs($this->admin, 'admin')
+            ->get('/admins/' . $admin->id . '/edit/');
         $response->assertStatus(200);
 
         // save admin
@@ -220,6 +221,29 @@ class AdminsTest extends TestCase
         $latest_index = $data_count - 1;
         $this->assertNotEquals($this->email, $data[$latest_index]['email']);
         $this->assertNotEquals($this->name, $data[$latest_index]['name']);
+    }
+
+    public function test_deleting_admin_unsuccessfully()
+    {
+        // creating a new admin
+        $admin = $this->createAdmin();
+        $wrong_id = $admin->id + 1;
+        $response = $this->actingAs($this->admin, 'admin')->delete('/admins/' . $wrong_id);
+
+        // correct response
+        $response->assertStatus(302);
+        // The model is not found. Please, check you id
+        $response->assertSessionHas('error', 'The model is not found. Please, check you id');
+        // missing in the database
+        $this->assertDatabaseHas('admins',
+            ['email' => $this->email, 'name' => $this->name]);
+        // does not exist in the data route data
+        $response = $this->actingAs($this->admin, 'admin')->get('/admins/data');
+        $data = json_decode($response->content(), true)['data'];
+        $data_count = count($data);
+        $latest_index = $data_count - 1;
+        $this->assertEquals($this->email, $data[$latest_index]['email']);
+        $this->assertEquals($this->name, $data[$latest_index]['name']);
     }
     // end: delete test
 
