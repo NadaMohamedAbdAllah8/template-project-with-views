@@ -45,15 +45,6 @@ class AdminsTest extends TestCase
         $response->assertRedirect('/login');
     }
 
-    public function test_create_page_opens_successfully()
-    {
-        $response = $this->actingAs($this->admin, 'admin')
-            ->get('/admins/create/');
-
-        $response->assertStatus(200);
-        $response->assertViewIs('admin.pages.admins.create');
-    }
-
     public function test_index_page_opens_for_admin()
     {
         $response = $this->actingAs($this->admin, 'admin')->get('/admins');
@@ -70,6 +61,15 @@ class AdminsTest extends TestCase
 
         $response->assertStatus(302);
         $response->assertRedirect('/login');
+    }
+
+    public function test_create_page_opens_successfully()
+    {
+        $response = $this->actingAs($this->admin, 'admin')
+            ->get('/admins/create/');
+
+        $response->assertStatus(200);
+        $response->assertViewIs('admin.pages.admins.create');
     }
 
     public function test_admin_creation_validation()
@@ -168,12 +168,12 @@ class AdminsTest extends TestCase
         $admin = $this->getAdmin();
 
         $response = $this->actingAs($this->admin, 'admin')
-            ->get('/admins/' . $admin->id . '/edit/');
-        // created data is in the view
-        $response->assertSee('value="' . $admin->email . '"', false);
-        $response->assertSee('value="' . $admin->name . '"', false);
+            ->get('/admins/' . $admin->id . '/edit');
+
         $response->assertStatus(200);
         $response->assertViewIs('admin.pages.admins.edit');
+        $response->assertSee('value="' . $admin->email . '"', false);
+        $response->assertSee('value="' . $admin->name . '"', false);
     }
 
     public function test_admin_editing_validation()
@@ -213,6 +213,16 @@ class AdminsTest extends TestCase
         $last_admin = Admin::latest('id')->first();
         $this->assertEquals($this->email_updated, $last_admin->email);
         $this->assertEquals($this->name_updated, $last_admin->name);
+        // the new data is returned from data
+        $response = $this->actingAs($this->admin, 'admin')->get('/admins/data');
+
+        // the admin is returned from the data function
+        $data = json_decode($response->content(), true)['data'];
+        $data_count = count($data);
+        $latest_index = $data_count - 1;
+
+        $this->assertEquals($this->email_updated, $data[$latest_index]['email']);
+        $this->assertEquals($this->name_updated, $data[$latest_index]['name']);
     }
 
     public function test_editing_admin_fails_on_duplicated_emails()
@@ -239,11 +249,48 @@ class AdminsTest extends TestCase
         $response->assertRedirect($edit_url);
         $response->assertInvalid(['email']);
     }
+    // end: edit test
+
+    // start: show test
+    public function test_show_does_not_open_for_unauthenticated()
+    {
+        $admin = $this->getAdmin();
+        $response = $this->get('/admins/' . $admin->id);
+
+        $response->assertStatus(302);
+        $response->assertRedirect('/login');
+    }
+
+    public function test_show_page_opens_successfully()
+    {
+        $admin = $this->getAdmin();
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->get('/admins/' . $admin->id);
+        // created data is in the view
+        $response->assertSee('value="' . $admin->email . '"', false);
+        $response->assertSee('value="' . $admin->name . '"', false);
+        $response->assertStatus(200);
+        $response->assertViewIs('admin.pages.admins.show');
+    }
+
+    public function test_show_page_does_not_open_on_wrong_id()
+    {
+        $admin = $this->getAdmin();
+        $wrong_id = $admin->id + 1;
+        $response = $this->actingAs($this->admin, 'admin')->get('/admins/' . $wrong_id);
+
+        $response->assertStatus(302);
+        $response->assertSessionHas('error', 'The model is not found. Please, check you id');
+    }
+    // end: show test
 
     // start: delete test
     public function test_delete_does_not_open_for_unauthenticated()
     {
-        $response = $this->delete('/admins/delete');
+        $admin = $this->createAdmin();
+
+        $response = $this->delete('/admins/' . $admin->id);
 
         $response->assertStatus(302);
         $response->assertRedirect('/login');
@@ -251,7 +298,6 @@ class AdminsTest extends TestCase
 
     public function test_deleting_admin_successfully()
     {
-        // creating a new admin
         $admin = $this->createAdmin();
 
         $response = $this->actingAs($this->admin, 'admin')->delete('/admins/' . $admin->id);
@@ -279,9 +325,8 @@ class AdminsTest extends TestCase
 
         // correct response
         $response->assertStatus(302);
-        // The model is not found. Please, check you id
         $response->assertSessionHas('error', 'The model is not found. Please, check you id');
-        // missing in the database
+
         $this->assertDatabaseHas('admins',
             ['email' => $this->email, 'name' => $this->name]);
         // does not exist in the data route data
